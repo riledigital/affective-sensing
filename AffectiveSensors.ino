@@ -126,9 +126,9 @@ void setup()
 #endif //ECHO_TO_SERIAL
   }
 
-  logfile.println("millis,stamp,datetime,emg,gsr,ppg");
+  logfile.println("rtc_unix_time,millis,stamp,date,time,emg,gsr,ppg");
 #if ECHO_TO_SERIAL
-  Serial.println("millis,stamp,datetime,emg,gsr,ppg");
+  Serial.println("rtc_unix_time,millis,stamp,date,time,emg,gsr,ppg");
 #endif //ECHO_TO_SERIAL
 }
 
@@ -166,30 +166,42 @@ void loop()
 
   now = rtc.now();
   // log time
+  // logifle.println("rtc_unix_time,millis,stamp,datetime,emg,gsr,ppg");
+  // col: rtc_unix_time
   logfile.print(now.unixtime()); // seconds since 1/1/1970
   logfile.print(", ");
+  
+  // col: millis
+  logfile.print(millis()); // seconds since 1/1/1970
+  logfile.print(", ");
+
+  // col: date
   logfile.print('"');
   logfile.print(now.year(), DEC);
   logfile.print("/");
   logfile.print(now.month(), DEC);
   logfile.print("/");
   logfile.print(now.day(), DEC);
-  logfile.print(" ");
+  logfile.print('"');
+  logfile.print(", ");
+  // NEW COL FOR hms
+  // col: time
   logfile.print(now.hour(), DEC);
   logfile.print(":");
   logfile.print(now.minute(), DEC);
   logfile.print(":");
   logfile.print(now.second(), DEC);
   logfile.print('"');
-  // EMG
+  logfile.print(", ");
+  // col: EMG
   logfile.print(data_emg);
   logfile.print(", ");
-  // GSR
+  // col: GSR
   logfile.print(data_gsr);
   logfile.print(", ");
-  // PPG
+  // col: PPG
   logfile.print(data_ppg_hr);
-  logfile.print(data_ppg_raw);
+  // logfile.print(data_ppg_raw);
   // logfile.print(", ");
   logfile.println();
 
@@ -224,7 +236,7 @@ void loop()
   // PPG
   Serial.print(data_ppg_hr);
   Serial.print(data_ppg_raw);
-  Serial.print(", ");
+  // Serial.print(", ");
   Serial.println();
 
 #endif //ECHO_TO_SERIAL
